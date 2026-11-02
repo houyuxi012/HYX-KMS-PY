@@ -2,6 +2,19 @@
 set -eu
 umask 077
 
+case "${KMS_IPV6:-false}" in
+    1|true|yes)
+        ipv6_enabled=true
+        ;;
+    0|false|no|"")
+        ipv6_enabled=false
+        ;;
+    *)
+        echo "KMS_IPV6 must be true or false." >&2
+        exit 64
+        ;;
+esac
+
 cd /opt/HYX-KMS-PY/hyx_kms_py
 
 set -- hyx_kms_server.py \
@@ -21,6 +34,29 @@ fi
 
 if [ -n "${LOGSIZE:-}" ]; then
     set -- "$@" -S "$LOGSIZE"
+fi
+
+if [ "$ipv6_enabled" = true ]; then
+    case "$IP" in
+        0.0.0.0)
+            set -- "$@" connect -n "::,$PORT"
+            ;;
+        ::)
+            set -- "$@" connect -n "0.0.0.0,$PORT"
+            ;;
+        127.*)
+            set -- "$@" connect -n "::1,$PORT"
+            ;;
+        ::1)
+            set -- "$@" connect -n "127.0.0.1,$PORT"
+            ;;
+        *:*)
+            set -- "$@" connect -n "0.0.0.0,$PORT"
+            ;;
+        *)
+            set -- "$@" connect -n "::,$PORT"
+            ;;
+    esac
 fi
 
 if [ "${SQLITE:-false}" != "true" ]; then

@@ -240,13 +240,24 @@ class HardeningTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             path = str(Path(d) / 'db')
             sql_initialize(path)
-            with patch.dict(os.environ, PYKMS_SQLITE_DB_PATH=path), \
+            with patch.dict(os.environ, PYKMS_SQLITE_DB_PATH=path, IP='::', PORT='1688',
+                            KMS_HEALTH_HOST=''), \
                  patch('hyx_kms_webui.probe_kms') as probe:
                 _reset_ready_cache()
                 client = app.test_client()
                 self.assertEqual(client.get('/readyz', base_url='https://localhost').status_code, 200)
                 self.assertEqual(client.get('/readyz', base_url='https://localhost').status_code, 200)
                 self.assertEqual(probe.call_count, 1)
+                probe.assert_called_once_with('::1', 1688)
+
+    def test_kms_probe_host_follows_listener_family_and_override(self):
+        from hyx_kms_health import kms_probe_host
+        with patch.dict(os.environ, IP='0.0.0.0', KMS_HEALTH_HOST=''):
+            self.assertEqual(kms_probe_host(), '127.0.0.1')
+        with patch.dict(os.environ, IP='::', KMS_HEALTH_HOST=''):
+            self.assertEqual(kms_probe_host(), '::1')
+        with patch.dict(os.environ, IP='::', KMS_HEALTH_HOST='[fd00::42]'):
+            self.assertEqual(kms_probe_host(), 'fd00::42')
 
     def test_connection_budget_and_split_bind_over_socket(self):
         import threading
@@ -286,6 +297,63 @@ class HardeningTests(unittest.TestCase):
                     self.assertEqual(recv_pdu(third)[2],12)
             finally:
                 first.close();listener.shutdown();listener.w_service.sendall(b'stop');worker.join(3);listener.server_close()
+            self.assertFalse(worker.is_alive())
+
+    def test_ipv6_listener_accepts_rpc_bind(self):
+        if not socket.has_ipv6:
+            self.skipTest('IPv6 is unavailable')
+        import threading
+        import time
+        import hyx_kms_server as server
+        from hyx_kms_health import probe_kms
+        with patch.dict(
+            os.environ,
+            KMS_ALLOWED_NETWORKS='',
+            KMS_MAX_CONNECTIONS='2',
+            KMS_MAX_CONNECTIONS_PER_SOURCE='2',
+            KMS_CONNECTION_LIFETIME='2',
+        ), patch.dict(
+            server.srv_config,
+            {'timeoutsndrcv': 1, 'port': 1688},
+            clear=True,
+        ):
+            try:
+                listener = server.KeyServer(
+                    [('::1', 0, 5, False)],
+                    server.kmsServerHandler,
+                )
+            except (OSError, SystemExit) as error:
+                self.skipTest('Loopback IPv6 is unavailable: %s' % error)
+            address = listener.multisock.getsockname()
+            worker = threading.Thread(
+                target=listener.hyx_kms_serve,
+                daemon=True,
+            )
+            worker.start()
+            try:
+                deadline = time.monotonic() + 2
+                while True:
+                    try:
+                        probe_kms(address[0], address[1])
+                        break
+                    except (OSError, EOFError, ValueError):
+                        if time.monotonic() >= deadline:
+                            self.fail('IPv6 KMS listener did not become ready')
+                        time.sleep(0.01)
+                from hyx_kms_health import check
+                with patch.dict(
+                    os.environ,
+                    IP=address[0],
+                    PORT=str(address[1]),
+                    KMS_HEALTH_HOST='',
+                    SQLITE='false',
+                ):
+                    check()
+            finally:
+                listener.shutdown()
+                listener.w_service.sendall(b'stop')
+                worker.join(3)
+                listener.server_close()
             self.assertFalse(worker.is_alive())
 
     def test_response_integrity_and_mixed_protocol_concurrency(self):

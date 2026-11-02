@@ -25,6 +25,8 @@
 
 `run.sh` 默认只把网站和 KMS 发布到宿主机 `127.0.0.1`：网站使用 HTTPS `443` 映射到容器内 `8080`，KMS 使用 `1688`。局域网部署应显式设置 `KMS_PUBLISH_ADDRESS`，同时核对 `KMS_ALLOWED_NETWORKS`、宿主机防火墙和上游 NAT；`KMS_PUBLISH_PORT`、`WEB_PUBLISH_ADDRESS`、`WEB_PUBLISH_PORT` 控制其余发布位置。默认资源限额可通过 `KMS_PIDS_LIMIT`、`KMS_MEMORY_LIMIT`、`KMS_CPU_LIMIT`、`KMS_NOFILE_LIMIT` 覆盖，调整前要记录容量依据。
 
+IPv6 采用显式启用：`KMS_IPV6=true` 为 KMS 增加另一个地址族的容器监听，`WEB_IPV6=true` 增加网站 HTTPS 的宿主机 IPv6 发布。`KMS_IPV6_PUBLISH_ADDRESS` 和 `WEB_IPV6_PUBLISH_ADDRESS` 未设置时均为 `::1`，不会默认暴露全部 IPv6 接口。内网部署必须填写确认过的宿主机 ULA 或全局单播地址，并检查 Docker 引擎的 IPv6 端口发布能力；完整步骤见[IPv6 双栈部署](IPv6.md)。
+
 ## 网络准入与 NAT
 
 `KMS_ALLOWED_NETWORKS` 接收逗号分隔的 IPv4/IPv6 CIDR，最多 64 项。程序总会加入 `127.0.0.0/8` 和 `::1/128` 以保留本机健康探测。非回环监听缺少该变量时服务拒绝启动。
@@ -37,7 +39,7 @@
 -e KMS_ALLOWED_NETWORKS=192.168.10.0/24
 ```
 
-若使用 IPv6，应同时验证 AAAA 解析、容器监听、宿主机发布、路由和实际来源 CIDR。IPv6 新身份预算按 `/64` 聚合；网络白名单仍应按实际可路由前缀收窄。
+若使用 IPv6，应同时维护 A 和 AAAA 解析，并分别验证容器监听、宿主机端口发布、主机防火墙、上游路由和实际来源 CIDR。IPv6 新身份预算按 `/64` 聚合；网络白名单仍应按实际可路由前缀收窄。Docker 网桥或 NAT 可能把来源显示为网关地址；必须记录实际观察值，不能以 `::/0` 代替网络边界。KMS 只使用 TCP，不需要开放 UDP `1688`。
 
 ## 证书轮换
 

@@ -68,7 +68,7 @@ python3.14 hyx_kms_server.py etrigan --help
 python3.14 hyx_kms_server.py 127.0.0.1 1688 -s ./HYX-KMS-PY_database.db -V INFO -F STDOUT
 ```
 
-`connect` 子命令支持重复 `-n IP,PORT` 添加监听地址、`-b` 调整 backlog、`-u` 关闭端口复用、`-d` 启用双栈监听。IPv6 是否可用还取决于系统、容器发布和网络，不应只靠参数推断。
+`connect` 子命令支持重复 `-n IP,PORT` 添加监听地址、`-b` 调整 backlog、`-u` 关闭端口复用、`-d` 启用双栈监听。IPv6 是否可用还取决于系统、容器发布和网络，不应只靠参数推断。双栈监听、页面 IPv6 地址和端到端验收见 [IPv6 双栈部署](IPv6.md)。
 
 `etrigan` 提供原生进程管理功能；容器已有入口脚本和 Docker 重启策略，不需要在容器中再启动守护进程。GUI 依赖图形环境及可选组件，不属于完整镜像的网站。
 

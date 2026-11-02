@@ -37,6 +37,12 @@ bash docker/hyx-kms-py/prepare-tls.sh /absolute/fullchain.pem /absolute/privkey.
 
 `run.sh` 要求 `WEB_TLS_VOLUME=HYX-KMS-PY-tls`、`WEB_TLS_SERVER_NAME` 和 `KMS_ALLOWED_NETWORKS`。直接挂载本地证书目录也受支持，设置对应绝对容器路径并保证 `hyx` 可读；不要通过给组或其他用户读权限来解决 UID 差异。
 
+## IPv6 访问
+
+网站通过 IPv6 访问时仍使用同一套 HTTPS 和证书配置。启用 `WEB_IPV6=true` 会增加宿主机 IPv6 的 `443` 发布，容器内 Gunicorn 与 TLS 配置不需要改变；未指定 `WEB_IPV6_PUBLISH_ADDRESS` 时只绑定 `::1`。局域网访问必须显式填写宿主机 ULA 或全局单播地址。
+
+使用域名访问时，DNS 需要同时维护 A 和 AAAA 记录，证书 SAN 应包含实际访问的 DNS 名称。直接通过 IPv6 字面地址访问时，证书 SAN 必须包含该 IPv6 地址，客户端信任链也必须有效。Docker 发布、防火墙、证书名称和 KMS 来源准入的完整验收见 [IPv6 双栈部署](IPv6.md)。
+
 ## 原生运行
 
 在 `hyx_kms_py/` 下使用已安装依赖的虚拟环境启动：

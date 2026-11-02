@@ -34,7 +34,7 @@ from hyx_kms_format import enco, deco, pretty_printer, justify
 from Etrigan import Etrigan, Etrigan_parser, Etrigan_check, Etrigan_job
 from hyx_kms_connect import MultipleListener
 
-srv_version             = "HYX-KMS-PY_2026.11.02-rc.2"
+srv_version             = "HYX-KMS-PY_2026.11.02-rc.3"
 __license__             = "The Unlicense"
 __author__              = u"Matteo ℱan <SystemRage@protonmail.com>"
 __url__                 = "docs/index.rst"

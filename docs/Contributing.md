@@ -23,7 +23,7 @@ python3.14 scripts/generate_sbom.py          # 重新生成 sbom.cdx.json
 sh scripts/run_checks.sh
 ```
 
-统一检查会运行 Python 回归、Node 测试、产品矩阵和 SBOM 的 `--check`、Pyflakes 与 Sphinx 严格构建。Python 回归覆盖产品数据、配置、文件时间、网站、协议、daemon 生命周期、备份恢复与身份归档；测试通过不证明未覆盖的恶意输入、长期运行、真实设备或所有 CPU 架构均可靠。GUI、浏览器交互、目标镜像和容器改动还需相应的实际环境检查。
+统一检查会运行 Python 回归、Node 测试、产品矩阵和 SBOM 的 `--check`、Pyflakes 与 Sphinx 严格构建。Python 回归覆盖产品数据、配置、IPv4/IPv6 监听与健康探测、文件时间、网站、协议、daemon 生命周期、备份恢复与身份归档；受限环境应允许本机端口绑定，否则真实回环测试会被跳过。测试通过不证明未覆盖的恶意输入、长期运行、真实设备或所有 CPU 架构均可靠。GUI、浏览器交互、目标镜像和容器改动还需相应的实际环境检查。
 
 ## 文档检查
 

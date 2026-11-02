@@ -13,6 +13,7 @@ HYX-KMS-PY 是基于 Python 的 KMS 协议模拟服务，网站显示名称为�
 | [架构说明](docs/Documentation.md) | 模块职责、请求与数据流、端口、存储和运行边界 |
 | [离线生产部署包](docs/Offline-Deployment.md) | 镜像、TLS 初始化脚本、启动脚本、校验与固定版本发布 |
 | [部署与配置](docs/Getting%20Started.md) | Docker、本地启动、配置参数、指定域名、DNS、更新和备份 |
+| [IPv6 双栈部署](docs/IPv6.md) | 双栈监听、IPv6 端口发布、DNS、防火墙、来源准入和验收 |
 | [发布与运维](docs/Operations.md) | 上线检查、网络准入、证书轮换、备份恢复、身份归档、监控和发布门禁 |
 | [使用说明](docs/Usage.md) | 网站操作、Office 架构、CLI 参数和验收 |
 | [故障排查](docs/Troubleshooting.md) | 域名不显示、域名可解析但连接失败、数据库与脚本问题 |
@@ -61,6 +62,8 @@ docker run -d --name HYX-KMS-PY \
 页面「KMS 服务器」可通过 `KMS_PUBLIC_HOST=kms.example.com` 指定默认域名。这个参数只控制页面及生成脚本的默认地址；还需要独立设置 DNS 解析、TCP 端口映射和网络放行。完整步骤见[指定 KMS 域名](docs/Getting%20Started.md#指定-kms-域名)。
 
 网站强制 HTTPS；本地证书、组织 CA、权限、轮换及健康检查配置见 [HTTPS 与本地证书](docs/HTTPS.md)。
+
+默认部署保持 IPv4；在确认宿主机、Docker、DNS 和上游网络均已启用 IPv6 后，可设置 `KMS_IPV6=true` 和 `WEB_IPV6=true` 增加双栈端口发布。显式启用但未指定发布地址时只绑定 IPv6 回环 `::1`，面向内网时必须指定宿主机实际 ULA 或全局单播地址。完整步骤见 [IPv6 双栈部署](docs/IPv6.md)。
 
 完整容器默认使用单来源 KMS 连接准入和受控审计文件权限；`run.sh` 使用 `STDOUT`，并以只读根文件系统、`cap-drop=ALL`、`no-new-privileges`、非 root 用户和 PID/内存/CPU/文件描述符上限运行。网站对外默认发布到宿主机 HTTPS `443`，容器内部仍监听 `8080`；KMS 和网站默认都把发布地址限制在宿主机回环地址，局域网部署需显式设置发布地址并同步核对网络 ACL。
 

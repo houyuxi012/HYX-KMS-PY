@@ -74,7 +74,7 @@
   ],
   "metadata": {
     "component": {
-      "bom-ref": "pkg:generic/hyx-kms-py@2026.11.02-rc.2",
+      "bom-ref": "pkg:generic/hyx-kms-py@2026.11.02-rc.3",
       "licenses": [
         {
           "license": {
@@ -84,7 +84,7 @@
       ],
       "name": "HYX-KMS-PY",
       "type": "application",
-      "version": "2026.11.02-rc.2"
+      "version": "2026.11.02-rc.3"
     },
     "properties": [
       {

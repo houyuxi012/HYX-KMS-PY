@@ -42,7 +42,7 @@ docker load -i image/hyx-kms-py-<版本>-linux-amd64.tar
 
 macOS 没有 `sha256sum` 时可将命令换成 `shasum -a 256 -c SHA256SUMS`。
 
-确认版本并使用固定镜像标签。以下示例以 `2026.11.02-rc.2` 和 `kms.example.com` 为占位值：
+确认版本并使用固定镜像标签。以下示例以 `2026.11.02-rc.3` 和 `kms.example.com` 为占位值：
 
 ```bash
 VERSION=$(head -n 1 VERSION)
@@ -88,6 +88,8 @@ curl --fail --cacert /etc/hyx-kms/fullchain.pem \
 公开 CA 证书通常不需要 `--cacert`。本地自签名证书必须先由受控客户端安装信任根，不能通过关闭浏览器或客户端证书校验规避。
 
 网站不启用用户登录或 HTTP Basic 认证，启动后内网客户端可直接访问激活页面。访问范围应由 `WEB_PUBLISH_ADDRESS`、宿主机防火墙和内网路由限制；不能因为取消登录认证就将 `443` 或 KMS `1688` 直接暴露到公网。
+
+需要在受控内网启用 IPv6 时，再增加 `KMS_IPV6=true`、`WEB_IPV6=true` 和经过确认的 `KMS_IPV6_PUBLISH_ADDRESS`、`WEB_IPV6_PUBLISH_ADDRESS`。不要用 `::` 代替网络边界；完整 DNS、防火墙、Docker NAT 和客户端验收见[IPv6 双栈部署](IPv6.md)。
 
 ## 升级与回滚
 

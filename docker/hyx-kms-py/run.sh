@@ -6,6 +6,33 @@ set -euo pipefail
 : "${KMS_ALLOWED_NETWORKS:?Set KMS_ALLOWED_NETWORKS to the client IPv4/IPv6 CIDR allowlist}"
 kms_public_port="${KMS_PUBLISH_PORT:-${KMS_PUBLIC_PORT:-1688}}"
 image="${HYX_KMS_IMAGE:-hyx-kms-py:latest}"
+kms_ipv6=false
+web_ipv6=false
+
+case "${KMS_IPV6:-false}" in
+    1|true|yes) kms_ipv6=true ;;
+    0|false|no|"") ;;
+    *)
+        echo "KMS_IPV6 must be true or false." >&2
+        exit 64
+        ;;
+esac
+
+case "${WEB_IPV6:-false}" in
+    1|true|yes) web_ipv6=true ;;
+    0|false|no|"") ;;
+    *)
+        echo "WEB_IPV6 must be true or false." >&2
+        exit 64
+        ;;
+esac
+
+ipv6_host() {
+    case "$1" in
+        \[*\]) printf '%s' "$1" ;;
+        *) printf '[%s]' "$1" ;;
+    esac
+}
 
 docker run --rm --network none \
     -e WEB_TLS_CERT_FILE=/run/tls/current/fullchain.pem \
@@ -16,7 +43,8 @@ docker run --rm --network none \
     "$image" -c \
     'from hyx_kms_tls import tls_files; tls_files(); print("Runtime TLS is valid.")'
 
-docker run -d --name HYX-KMS-PY \
+docker_args=(
+    run -d --name HYX-KMS-PY
     --read-only \
     --tmpfs /tmp:rw,noexec,nosuid,nodev,size=16m \
     --cap-drop=ALL \
@@ -28,8 +56,25 @@ docker run -d --name HYX-KMS-PY \
     --stop-timeout 20 \
     -p "${WEB_PUBLISH_ADDRESS:-127.0.0.1}:${WEB_PUBLISH_PORT:-443}:8080" \
     -p "${KMS_PUBLISH_ADDRESS:-127.0.0.1}:${kms_public_port}:1688" \
-    -e IP=0.0.0.0 \
+)
+
+if [ "$web_ipv6" = true ]; then
+    docker_args+=(
+        -p "$(ipv6_host "${WEB_IPV6_PUBLISH_ADDRESS:-::1}"):${WEB_PUBLISH_PORT:-443}:8080"
+    )
+fi
+
+if [ "$kms_ipv6" = true ]; then
+    docker_args+=(
+        -p "$(ipv6_host "${KMS_IPV6_PUBLISH_ADDRESS:-::1}"):${kms_public_port}:1688"
+    )
+fi
+
+docker_args+=(
+    -e IP="${KMS_BIND_ADDRESS:-0.0.0.0}" \
     -e PORT=1688 \
+    -e KMS_HEALTH_HOST="${KMS_HEALTH_HOST:-}" \
+    -e KMS_IPV6="$kms_ipv6" \
     -e KMS_ALLOWED_NETWORKS="$KMS_ALLOWED_NETWORKS" \
     -e SQLITE=true \
     -e WEB_TLS_CERT_FILE=/run/tls/current/fullchain.pem \
@@ -47,3 +92,6 @@ docker run -d --name HYX-KMS-PY \
     -v HYX-KMS-PY-data:/data \
     --restart unless-stopped \
     "$image"
+)
+
+docker "${docker_args[@]}"

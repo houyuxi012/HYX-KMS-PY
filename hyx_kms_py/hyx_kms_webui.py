@@ -14,7 +14,7 @@ from pathlib import Path
 from flask import Flask, g, render_template, request, abort
 
 from hyx_kms_catalog import WINDOWS_SOURCE_URL, get_activation_products
-from hyx_kms_health import probe_kms
+from hyx_kms_health import kms_probe_host, probe_kms
 from hyx_kms_i18n import register_i18n, translate
 
 app = Flask(__name__)
@@ -187,7 +187,7 @@ def _evaluate_readiness():
         try:
             with closing(_open_readonly(os.environ['PYKMS_SQLITE_DB_PATH'], timeout=1)) as con:
                 con.execute('SELECT clientMachineId FROM clients LIMIT 1').fetchall()
-            probe_kms(os.environ.get('KMS_HEALTH_HOST', '127.0.0.1'), int(os.environ.get('PORT', '1688')))
+            probe_kms(kms_probe_host(), int(os.environ.get('PORT', '1688')))
             ready = True
         except (OSError, EOFError, sqlite3.Error, KeyError, ValueError, struct.error) as exc:
             loggersrv.warning('Readiness check failed: %s', exc)

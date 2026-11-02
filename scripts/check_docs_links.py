@@ -27,6 +27,7 @@ def audit():
         ROOT / 'README.md',
         ROOT / 'CHANGELOG.md',
         ROOT / 'SECURITY.md',
+        ROOT / 'docker/hyx-kms-py/DEPLOYMENT.md',
         *sorted((ROOT / 'docs').glob('*.md')),
     ]
     errors = []
@@ -35,7 +36,9 @@ def audit():
             parts = urlsplit(target)
             if parts.scheme or parts.netloc or target.startswith('#') or not unquote(parts.path):
                 continue
-            destination = (document.parent / unquote(parts.path)).resolve()
+            # DEPLOYMENT.md is copied to the bundle root, so its docs/ links are root-relative.
+            base = ROOT if document == ROOT / 'docker/hyx-kms-py/DEPLOYMENT.md' else document.parent
+            destination = (base / unquote(parts.path)).resolve()
             try:
                 destination.relative_to(ROOT)
             except ValueError:

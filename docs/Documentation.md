@@ -25,7 +25,7 @@
 ## 两条独立访问路径
 
 1. 浏览器通过 HTTPS 访问网站，查看客户端记录或生成脚本。默认网站监听容器内 `0.0.0.0:8080`，`run.sh` 和文档示例将容器端口映射到宿主机回环地址的 HTTPS `443`。
-2. 目标 Windows/Office 设备直接通过 TCP 连接 KMS 地址和端口，默认容器内为 `0.0.0.0:1688`。这条连接不经过网站的 HTTP 路由。
+2. 目标 Windows/Office 设备直接通过 TCP 连接 KMS 地址和端口，默认容器内为 `0.0.0.0:1688`。这条连接不经过网站的 HTTP 路由。显式启用双栈后，KMS 可同时监听 IPv4 与 IPv6，网站也可增加宿主机 IPv6 HTTPS 端口发布；默认仍保持 IPv4 和回环优先。
 
 网站域名和 KMS 域名可以相同，也可以不同；它们可以解析到同一宿主机。HTTPS 反向代理处理网站请求，不会自动转发 KMS TCP 流量。设置网站 HTTPS 证书也不会改变 KMS 协议。
 
@@ -45,6 +45,7 @@ Windows、Windows Server 和 Office 是网站产品分类。Windows Server 与 W
 - 设置 `SQLITE=true` 后，入口先校验本地 TLS 证书与私钥，再初始化 `/data/HYX-KMS-PY_database.db`，启动 KMS，并以单 worker、默认 4 线程的 Gunicorn `gthread` 运行 `hyx_kms_webui:app`。
 - 入口监视两个子进程。收到停止信号时清理子进程；发现受监视进程意外退出时，清理其他进程并退出，交由 Docker 的重启策略处理。
 - `/livez` 表示网站进程存活。`/readyz` 在 HTTPS 下匿名开放，验证数据库可读、clients 表及 KMS RPC bind 响应，失败返回 503；成功结果缓存 5 秒，不验证完整协议响应或真实激活成功。
+- 健康检查默认根据 `IP` 的地址族连接 `127.0.0.1` 或 `::1`，也可由 `KMS_HEALTH_HOST` 显式覆盖，因此 IPv6-only 原生监听不依赖 IPv4 回环。
 - 首页访问次数和网站启动时间存于网站进程内存，重启后重置，不是持久化审计记录。完整镜像已配置 Docker `HEALTHCHECK`。
 
 部署验收应同时检查首页、模拟协议请求和目标网络访问；不能只凭一个健康端点返回 200 判断完整服务可用。

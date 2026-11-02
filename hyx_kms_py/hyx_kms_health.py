@@ -1,4 +1,5 @@
 """Shared liveness/readiness probes; never writes an activation record."""
+import ipaddress
 import os
 import socket
 import struct
@@ -6,6 +7,27 @@ import time
 import uuid
 from hyx_kms_transport import recv_pdu
 from hyx_kms_dcerpc import MSRPCBindAck
+
+
+def kms_probe_host():
+    """Return the local address matching the configured KMS listener family."""
+    configured = os.environ.get('KMS_HEALTH_HOST', '').strip()
+    if configured:
+        if configured.startswith('[') and configured.endswith(']'):
+            candidate = configured[1:-1]
+            try:
+                ipaddress.ip_address(candidate)
+            except ValueError:
+                pass
+            else:
+                return candidate
+        return configured
+    bind_address = os.environ.get('IP', '0.0.0.0').strip()
+    try:
+        version = ipaddress.ip_address(bind_address).version
+    except ValueError:
+        version = 4
+    return '::1' if version == 6 else '127.0.0.1'
 
 
 def probe_kms(host, port, timeout=1.0):
@@ -36,7 +58,7 @@ def check():
         from hyx_kms_tls import probe_web
         probe_web()
     else:
-        probe_kms(os.environ.get('KMS_HEALTH_HOST', '127.0.0.1'), int(os.environ.get('PORT', '1688')))
+        probe_kms(kms_probe_host(), int(os.environ.get('PORT', '1688')))
 
 
 if __name__ == '__main__':

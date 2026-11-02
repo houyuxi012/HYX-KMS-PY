@@ -11,6 +11,7 @@
    Offline-Deployment
    Getting Started
    Operations
+   IPv6
    HTTPS
    Usage
    Troubleshooting

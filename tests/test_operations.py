@@ -182,72 +182,168 @@ class IdentityArchiveTests(unittest.TestCase):
 
 
 class ContainerLaunchTests(unittest.TestCase):
-    def test_run_script_defaults_web_to_https_443_with_hardened_runtime(self):
+    def run_with_fake_executable(self, script, executable, updates):
         with tempfile.TemporaryDirectory() as directory:
             directory = Path(directory)
-            dump = directory / 'docker-args.txt'
-            docker = directory / 'docker'
-            docker.write_text(
-                '#!/bin/sh\nprintf "%s\\n" "$@" > "$HYX_DOCKER_ARGS"\n',
+            dump = directory / 'arguments.txt'
+            fake = directory / executable
+            fake.write_text(
+                '#!/bin/sh\nprintf "%s\\n" "$@" > "$HYX_COMMAND_ARGS"\n',
                 encoding='utf-8',
             )
-            docker.chmod(0o755)
+            fake.chmod(0o755)
             environment = os.environ.copy()
+            for name in (
+                'HYX_KMS_IMAGE', 'KMS_BIND_ADDRESS', 'KMS_HEALTH_HOST',
+                'KMS_IPV6', 'KMS_IPV6_PUBLISH_ADDRESS', 'KMS_PUBLISH_ADDRESS',
+                'WEB_IPV6', 'WEB_IPV6_PUBLISH_ADDRESS', 'WEB_PUBLISH_ADDRESS',
+            ):
+                environment.pop(name, None)
+            environment.update(updates)
             environment.update({
                 'PATH': str(directory) + os.pathsep + environment['PATH'],
-                'HYX_DOCKER_ARGS': str(dump),
-                'WEB_TLS_VOLUME': 'test-tls',
-                'WEB_TLS_SERVER_NAME': 'localhost',
-                'KMS_ALLOWED_NETWORKS': '127.0.0.0/8',
+                'HYX_COMMAND_ARGS': str(dump),
             })
             result = subprocess.run(
-                ['bash', str(ROOT / 'docker/hyx-kms-py/run.sh')],
+                ['bash', str(script)],
                 env=environment,
                 capture_output=True,
                 text=True,
                 timeout=10,
             )
-            self.assertEqual(result.returncode, 0, result.stderr)
-            arguments = dump.read_text(encoding='utf-8').splitlines()
-            self.assertIn('127.0.0.1:443:8080', arguments)
-            self.assertIn('127.0.0.1:1688:1688', arguments)
-            self.assertIn('--read-only', arguments)
-            self.assertIn('--cap-drop=ALL', arguments)
-            self.assertIn('--security-opt=no-new-privileges:true', arguments)
-            self.assertIn('LOGFILE=STDOUT', arguments)
-            self.assertFalse(any('WEB_AUTH' in argument for argument in arguments))
-            self.assertFalse(any('HYX-KMS-PY-auth' in argument for argument in arguments))
-            self.assertEqual(arguments[-1], 'hyx-kms-py:latest')
+            arguments = dump.read_text(encoding='utf-8').splitlines() if dump.exists() else []
+            return result, arguments
+
+    def test_run_script_defaults_web_to_https_443_with_hardened_runtime(self):
+        result, arguments = self.run_with_fake_executable(
+            ROOT / 'docker/hyx-kms-py/run.sh',
+            'docker',
+            {
+                'WEB_TLS_VOLUME': 'test-tls',
+                'WEB_TLS_SERVER_NAME': 'localhost',
+                'KMS_ALLOWED_NETWORKS': '127.0.0.0/8',
+            },
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('127.0.0.1:443:8080', arguments)
+        self.assertIn('127.0.0.1:1688:1688', arguments)
+        self.assertIn('--read-only', arguments)
+        self.assertIn('--cap-drop=ALL', arguments)
+        self.assertIn('--security-opt=no-new-privileges:true', arguments)
+        self.assertIn('LOGFILE=STDOUT', arguments)
+        self.assertIn('KMS_HEALTH_HOST=', arguments)
+        self.assertIn('KMS_IPV6=false', arguments)
+        self.assertFalse(any('WEB_AUTH' in argument for argument in arguments))
+        self.assertFalse(any('HYX-KMS-PY-auth' in argument for argument in arguments))
+        self.assertEqual(arguments[-1], 'hyx-kms-py:latest')
 
     def test_run_script_uses_explicit_release_image(self):
-        with tempfile.TemporaryDirectory() as directory:
-            directory = Path(directory)
-            dump = directory / 'docker-args.txt'
-            docker = directory / 'docker'
-            docker.write_text(
-                '#!/bin/sh\nprintf "%s\\n" "$@" > "$HYX_DOCKER_ARGS"\n',
-                encoding='utf-8',
-            )
-            docker.chmod(0o755)
-            environment = os.environ.copy()
-            environment.update({
-                'PATH': str(directory) + os.pathsep + environment['PATH'],
-                'HYX_DOCKER_ARGS': str(dump),
-                'HYX_KMS_IMAGE': 'hyx-kms-py:2026.11.02-rc.2-amd64',
+        result, arguments = self.run_with_fake_executable(
+            ROOT / 'docker/hyx-kms-py/run.sh',
+            'docker',
+            {
+                'HYX_KMS_IMAGE': 'hyx-kms-py:2026.11.02-rc.3-amd64',
                 'WEB_TLS_VOLUME': 'test-tls',
                 'WEB_TLS_SERVER_NAME': 'localhost',
                 'KMS_ALLOWED_NETWORKS': '127.0.0.0/8',
-            })
-            result = subprocess.run(
-                ['bash', str(ROOT / 'docker/hyx-kms-py/run.sh')],
-                env=environment,
-                capture_output=True,
-                text=True,
-                timeout=10,
+            },
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(arguments[-1], 'hyx-kms-py:2026.11.02-rc.3-amd64')
+
+    def test_run_script_publishes_dual_stack_ports(self):
+        result, arguments = self.run_with_fake_executable(
+            ROOT / 'docker/hyx-kms-py/run.sh',
+            'docker',
+            {
+                'WEB_TLS_VOLUME': 'test-tls',
+                'WEB_TLS_SERVER_NAME': 'localhost',
+                'KMS_ALLOWED_NETWORKS': '10.0.0.0/8,2001:db8::/32',
+                'KMS_IPV6': 'true',
+                'WEB_IPV6': 'true',
+                'KMS_PUBLISH_ADDRESS': '0.0.0.0',
+                'WEB_PUBLISH_ADDRESS': '0.0.0.0',
+                'KMS_IPV6_PUBLISH_ADDRESS': '2001:db8::10',
+                'WEB_IPV6_PUBLISH_ADDRESS': '[2001:db8::20]',
+            },
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('-p', arguments)
+        self.assertIn('0.0.0.0:1688:1688', arguments)
+        self.assertIn('[2001:db8::10]:1688:1688', arguments)
+        self.assertIn('0.0.0.0:443:8080', arguments)
+        self.assertIn('[2001:db8::20]:443:8080', arguments)
+        self.assertIn('KMS_IPV6=true', arguments)
+
+    def test_run_script_ipv6_publish_defaults_to_loopback(self):
+        result, arguments = self.run_with_fake_executable(
+            ROOT / 'docker/hyx-kms-py/run.sh',
+            'docker',
+            {
+                'WEB_TLS_VOLUME': 'test-tls',
+                'WEB_TLS_SERVER_NAME': 'localhost',
+                'KMS_ALLOWED_NETWORKS': '127.0.0.0/8,::1/128',
+                'KMS_IPV6': 'true',
+                'WEB_IPV6': 'true',
+            },
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('[::1]:1688:1688', arguments)
+        self.assertIn('[::1]:443:8080', arguments)
+        self.assertNotIn('[::]:1688:1688', arguments)
+        self.assertNotIn('[::]:443:8080', arguments)
+
+    def container_start_arguments(self, ip_address):
+        with tempfile.TemporaryDirectory() as directory:
+            directory = Path(directory)
+            source = ROOT / 'docker/hyx-kms-py/start.sh'
+            script = directory / 'start.sh'
+            script.write_text(
+                source.read_text(encoding='utf-8').replace(
+                    '/opt/HYX-KMS-PY', str(ROOT),
+                ),
+                encoding='utf-8',
             )
-            self.assertEqual(result.returncode, 0, result.stderr)
-            arguments = dump.read_text(encoding='utf-8').splitlines()
-        self.assertEqual(arguments[-1], 'hyx-kms-py:2026.11.02-rc.2-amd64')
+            result, arguments = self.run_with_fake_executable(
+                script,
+                'python3',
+                {
+                    'IP': ip_address,
+                    'PORT': '1688',
+                    'KMS_IPV6': 'true',
+                    'SQLITE': 'false',
+                    'LCID': '1033',
+                    'CLIENT_COUNT': '26',
+                    'ACTIVATION_INTERVAL': '120',
+                    'RENEWAL_INTERVAL': '10080',
+                    'HWID': '364F463A8863D35F',
+                    'LOGLEVEL': 'INFO',
+                    'LOGFILE': 'STDOUT',
+                },
+            )
+        return result, arguments
+
+    def test_container_start_script_adds_matching_ipv6_listener(self):
+        result, arguments = self.container_start_arguments('0.0.0.0')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        listener_index = arguments.index('connect')
+        self.assertEqual(arguments[listener_index:listener_index + 3], [
+            'connect', '-n', '::,1688',
+        ])
+
+    def test_container_start_script_keeps_loopback_additions_local(self):
+        for primary, expected in (
+            ('::', '0.0.0.0,1688'),
+            ('127.0.0.1', '::1,1688'),
+            ('::1', '127.0.0.1,1688'),
+        ):
+            with self.subTest(primary=primary):
+                result, arguments = self.container_start_arguments(primary)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                listener_index = arguments.index('connect')
+                self.assertEqual(arguments[listener_index:listener_index + 3], [
+                    'connect', '-n', expected,
+                ])
 
 
 if __name__ == '__main__':

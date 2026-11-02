@@ -79,9 +79,9 @@ docker buildx build --platform linux/arm64 --load \
 
 ### 设置 DNS 与网络
 
-1. 在实际使用的 DNS 中添加 A 记录，例如 `kms.example.com` → `192.168.10.20`。示例 IP 需要替换为宿主机对客户端可达的真实地址；内网设备可用内网 IP，跨网访问需有对应路由或 VPN。
+1. 在实际使用的 DNS 中添加 A 记录，例如 `kms.example.com` → `192.168.10.20`。需要 IPv6 时，同时添加指向宿主机 ULA 或全局单播地址的 AAAA 记录。示例地址需要替换为客户端可达的真实地址；跨网访问需有对应路由或 VPN。
 2. 按客户端来源范围放通宿主机和上游网络的 TCP 1688。宿主机经过 NAT 时，配置到宿主机 KMS 端口的 TCP 转发。
-3. 使用 IPv6 前，另行验证 AAAA 记录、服务监听、Docker 发布和端到端路由。不要仅凭添加 AAAA 记录就认为 IPv6 可用。
+3. 使用 IPv6 前，按[IPv6 双栈部署](IPv6.md)验证 AAAA 记录、服务监听、Docker 发布、防火墙和端到端路由。不要仅凭添加 AAAA 记录就认为 IPv6 可用。
 4. KMS 是 TCP 协议，不是 HTTP。仅提供 HTTP/HTTPS 的域名代理或反向代理不能直接承载此端口。
 
 本文使用保留示例域名 `kms.example.com`，请替换为你控制的真实域名。只填写主机名，不带 `http://`、`https://`、斜杠、路径或空格；端口使用单独参数。
@@ -125,7 +125,7 @@ docker run -d --name HYX-KMS-PY \
 
 Docker 容器的环境变量不能通过一次 `docker restart` 修改。应先备份并记录原实例的镜像、数据卷、端口与其他配置，再按新的环境变量重建容器，挂载原数据卷。使用 Compose 时修改 `environment` 后执行 `docker compose up -d`；不要使用删除数据卷的选项。
 
-仓库的 `docker/hyx-kms-py/run.sh` 要求 `WEB_TLS_VOLUME`、`WEB_TLS_SERVER_NAME` 和 `KMS_ALLOWED_NETWORKS`，不会自动删除现有同名容器。`HYX_KMS_IMAGE` 可指定固定版本镜像；未设置时仍使用开发默认值 `hyx-kms-py:latest`。脚本默认只把网站和 KMS 发布到宿主机 `127.0.0.1`；网站外部端口默认为 HTTPS `443`，KMS 外部端口默认为 `1688`，容器内网站端口仍为 `8080`。局域网部署应显式设置 `KMS_PUBLISH_ADDRESS`；`WEB_PUBLISH_ADDRESS`、`KMS_PUBLISH_PORT`、`WEB_PUBLISH_PORT` 可分别控制另一个发布地址和外部端口。资源限制可由 `KMS_PIDS_LIMIT`、`KMS_MEMORY_LIMIT`、`KMS_CPU_LIMIT`、`KMS_NOFILE_LIMIT` 覆盖。页面默认域名和端口分别读取 `KMS_PUBLIC_HOST`、`KMS_PUBLIC_PORT`。已有实例应按已核实参数管理升级。
+仓库的 `docker/hyx-kms-py/run.sh` 要求 `WEB_TLS_VOLUME`、`WEB_TLS_SERVER_NAME` 和 `KMS_ALLOWED_NETWORKS`，不会自动删除现有同名容器。`HYX_KMS_IMAGE` 可指定固定版本镜像；未设置时仍使用开发默认值 `hyx-kms-py:latest`。脚本默认只把网站和 KMS 发布到宿主机 `127.0.0.1`；网站外部端口默认为 HTTPS `443`，KMS 外部端口默认为 `1688`，容器内网站端口仍为 `8080`。局域网部署应显式设置 `KMS_PUBLISH_ADDRESS`；`WEB_PUBLISH_ADDRESS`、`KMS_PUBLISH_PORT`、`WEB_PUBLISH_PORT` 可分别控制另一个发布地址和外部端口。`KMS_IPV6=true`、`WEB_IPV6=true` 增加宿主 IPv6 发布，未显式设置对应 IPv6 地址时默认只绑定 `::1`；具体配置见[IPv6 双栈部署](IPv6.md)。资源限制可由 `KMS_PIDS_LIMIT`、`KMS_MEMORY_LIMIT`、`KMS_CPU_LIMIT`、`KMS_NOFILE_LIMIT` 覆盖。页面默认域名和端口分别读取 `KMS_PUBLIC_HOST`、`KMS_PUBLIC_PORT`。已有实例应按已核实参数管理升级。
 
 ### 外部端口与网站域名
 
@@ -224,8 +224,14 @@ docker compose logs --tail 100 kms
 | --- | --- | --- |
 | `IP` | `0.0.0.0` | 容器内 KMS 监听地址 |
 | `PORT` | `1688` | 容器内 KMS 监听端口 |
+| `KMS_BIND_ADDRESS` | `0.0.0.0` | `run.sh` 传给容器 `IP` 的首个 KMS 监听地址，可设为 IPv6 字面地址 |
+| `KMS_IPV6` | `false` | `true` 时在首个监听地址外增加另一个地址族的 KMS 监听 |
+| `KMS_IPV6_PUBLISH_ADDRESS` | `::1` | 启用宿主 IPv6 KMS 发布且未指定地址时的回环地址 |
 | `KMS_ALLOWED_NETWORKS` | 未设置 | 非回环监听时必填；逗号分隔 IPv4/IPv6 CIDR，程序始终加入本机回环 |
+| `KMS_HEALTH_HOST` | 空 | 健康探测地址；空值按 `IP` 地址族选择 `127.0.0.1` 或 `::1` |
 | `SQLITE` | `false` | 仅字面值 `true` 启用客户端数据库与网站 |
+| `WEB_IPV6` | `false` | `true` 时增加网站 HTTPS 的宿主机 IPv6 端口发布 |
+| `WEB_IPV6_PUBLISH_ADDRESS` | `::1` | 启用网站 IPv6 发布且未指定地址时的回环地址 |
 | `WEB_HOST` | `0.0.0.0` | 网站监听地址；Docker 发布端口时不要改为容器内 `127.0.0.1` |
 | `WEB_PORT` | `8080` | 容器内 HTTPS 端口，修改后需同步端口映射 |
 | `WEB_TLS_CERT_FILE` | 必填 | PEM 证书链绝对路径 |

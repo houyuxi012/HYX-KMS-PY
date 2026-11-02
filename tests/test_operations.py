@@ -345,6 +345,76 @@ class ContainerLaunchTests(unittest.TestCase):
                     'connect', '-n', expected,
                 ])
 
+    def test_container_start_script_places_sqlite_before_connect_subcommand(self):
+        with tempfile.TemporaryDirectory() as directory:
+            directory = Path(directory)
+            data = directory / 'data'
+            data.mkdir()
+            source = ROOT / 'docker/hyx-kms-py/start.sh'
+            script = directory / 'start.sh'
+            script.write_text(
+                source.read_text(encoding='utf-8')
+                .replace('/opt/HYX-KMS-PY', str(ROOT))
+                .replace('/data', str(data)),
+                encoding='utf-8',
+            )
+            fake = directory / 'python3'
+            fake.write_text(
+                '#!/bin/sh\n'
+                'if [ "${1:-}" = "hyx_kms_server.py" ]; then\n'
+                '  printf "%s\\n" "$@" > "$HYX_SERVER_ARGS"\n'
+                '  sleep 1\n'
+                'fi\n',
+                encoding='utf-8',
+            )
+            fake.chmod(0o755)
+            gunicorn = directory / 'gunicorn'
+            gunicorn.write_text(
+                '#!/bin/sh\n'
+                'trap "exit 0" TERM INT\n'
+                'while :; do sleep 1; done\n',
+                encoding='utf-8',
+            )
+            gunicorn.chmod(0o755)
+            dump = directory / 'server-args.txt'
+            environment = os.environ.copy()
+            environment.update({
+                'PATH': str(directory) + os.pathsep + environment['PATH'],
+                'HYX_SERVER_ARGS': str(dump),
+                'IP': '0.0.0.0',
+                'PORT': '1688',
+                'KMS_IPV6': 'true',
+                'SQLITE': 'true',
+                'HYX_WEBUI_AVAILABLE': '1',
+                'LCID': '1033',
+                'CLIENT_COUNT': '26',
+                'ACTIVATION_INTERVAL': '120',
+                'RENEWAL_INTERVAL': '10080',
+                'HWID': '364F463A8863D35F',
+                'LOGLEVEL': 'INFO',
+                'LOGFILE': 'STDOUT',
+            })
+            result = subprocess.run(
+                ['bash', str(script)],
+                env=environment,
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
+            self.assertIn(result.returncode, (0, 1), result.stderr)
+            arguments = dump.read_text(encoding='utf-8').splitlines()
+            sqlite_index = arguments.index('-s')
+            connect_index = arguments.index('connect')
+            self.assertEqual(
+                arguments[sqlite_index:sqlite_index + 2],
+                ['-s', str(data / 'HYX-KMS-PY_database.db')],
+            )
+            self.assertLess(sqlite_index, connect_index)
+            self.assertEqual(
+                arguments[connect_index:connect_index + 3],
+                ['connect', '-n', '::,1688'],
+            )
+
 
 if __name__ == '__main__':
     unittest.main()

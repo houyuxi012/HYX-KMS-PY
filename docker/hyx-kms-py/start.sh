@@ -36,6 +36,15 @@ if [ -n "${LOGSIZE:-}" ]; then
     set -- "$@" -S "$LOGSIZE"
 fi
 
+database="/data/HYX-KMS-PY_database.db"
+if [ "${SQLITE:-false}" = "true" ]; then
+    if [ "${HYX_WEBUI_AVAILABLE:-1}" != "1" ]; then
+        echo "SQLITE=true requires the full WebUI image." >&2
+        exit 64
+    fi
+    set -- "$@" -s "$database"
+fi
+
 if [ "$ipv6_enabled" = true ]; then
     case "$IP" in
         0.0.0.0)
@@ -63,16 +72,9 @@ if [ "${SQLITE:-false}" != "true" ]; then
     exec python3 "$@"
 fi
 
-if [ "${HYX_WEBUI_AVAILABLE:-1}" != "1" ]; then
-    echo "SQLITE=true requires the full WebUI image." >&2
-    exit 64
-fi
-
 python3 -m hyx_kms_tls
 
-database="/data/HYX-KMS-PY_database.db"
 chmod 700 /data
-set -- "$@" -s "$database"
 python3 -c "import sys; from hyx_kms_sql import sql_initialize; sql_initialize(sys.argv[1])" "$database"
 
 cleanup() {

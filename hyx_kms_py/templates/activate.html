@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}{{ t('激活') }}{% endblock %}
+{% block content %}
+<section class="kms-panel">
+    <header class="page-heading">
+        <h1>{{ t('产品激活') }}</h1>
+        <p>{{ t('选择产品和版本，生成对应的激活脚本。') }}</p>
+    </header>
+
+    <div class="activation-workbench">
+        <div class="activation-config">
+            <div class="field">
+                <label class="label" for="family-select">{{ t('产品类型') }}</label>
+                <div class="select is-fullwidth">
+                    <select id="family-select"><option>Windows</option><option>Windows Server</option><option>Office</option></select>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label" id="product-label" for="product-select">{{ t('发行版本') }}</label>
+                <div class="select is-fullwidth" id="edition-picker">
+                    <select id="product-select" aria-label="{{ t('发行版本') }}"></select>
+                    <button id="edition-trigger" class="edition-trigger" type="button" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-controls="edition-menu" aria-labelledby="product-label edition-value" hidden><span id="edition-value"></span></button>
+                    <div id="edition-menu" class="edition-menu" role="listbox" aria-labelledby="product-label" hidden></div>
+                </div>
+            </div>
+            <fieldset class="field" id="office-architecture" aria-describedby="office-architecture-help" hidden>
+                <legend class="label">{{ t('系统架构') }}</legend>
+                <div class="architecture-options">
+                    <label class="radio"><input type="radio" name="office-architecture" value="x64" checked>{{ t('64 位') }}</label>
+                    <label class="radio"><input type="radio" name="office-architecture" value="x86">{{ t('32 位') }}</label>
+                </div>
+                <p class="help" id="office-architecture-help">{{ t('按已安装 Office 的位数选择，64 位 Windows 也可安装 32 位 Office。') }}</p>
+            </fieldset>
+            <details class="connection-options" id="connection-options"{% if default_port|string != '1688' %} open{% endif %}>
+                <summary>{{ t('高级设置') }}</summary>
+                <div class="field">
+                    <label class="label" for="server-input">{{ t('KMS 服务器') }}</label>
+                    <input class="input" id="server-input" type="text" placeholder="{{ t('主机名或 IP 地址') }}" value="{{ default_server }}" maxlength="253" aria-describedby="server-help activation-error">
+                    <p class="help" id="server-help">{{ t('仅填写主机名或 IP，无需 http:// 或路径。') }}</p>
+                </div>
+                <div class="field connection-port-field">
+                    <label class="label" for="port-input">{{ t('端口') }}</label>
+                    <input class="input" id="port-input" type="number" min="1" max="65535" value="{{ default_port }}" aria-describedby="activation-error">
+                </div>
+            </details>
+            <p id="activation-error" class="help is-danger" role="status" aria-live="polite"></p>
+            <div class="field license-field">
+                <label class="label" for="gvlk-input">{{ t('客户端安装密钥') }} <span class="label-note">GVLK</span></label>
+                <input class="input key-input" id="gvlk-input" type="text" readonly>
+                <p class="help">{{ t('随所选版本自动匹配。') }}</p>
+                <p class="help" id="windows-catalog-note">{{ t('Windows 版本与密钥依据') }} <a href="{{ windows_catalog_source }}" target="_blank" rel="noopener noreferrer">{{ t('微软官方清单') }}</a>{{ t('，旧版系统的展示不代表仍在支持期内。') }}</p>
+            </div>
+        </div>
+
+        <div class="activation-result">
+            <div class="script-pane">
+                <div class="script-heading">
+                    <label for="script-output">{{ t('CMD 脚本') }}</label>
+                    <span>kms.bat</span>
+                </div>
+                <textarea class="textarea kms-script" id="script-output" readonly wrap="off" spellcheck="false"></textarea>
+            </div>
+            <div class="script-actions">
+                <p>{{ t('在目标设备上以管理员身份运行。') }}</p>
+                <div class="buttons">
+                    <button class="button is-light" id="copy-button" type="button">{{ t('复制脚本') }}</button>
+                    <button class="button is-primary" id="download-button" type="button">{{ t('下载 kms.bat') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+<noscript><p class="notification is-warning">{{ t('请启用 JavaScript 以选择产品并生成脚本。') }}</p></noscript>
+<script id="products-data" type="application/json" nonce="{{ csp_nonce }}">{{ products | tojson }}</script>
+{% endblock %}
+{% block script %}
+<script src="{{ url_for('static', filename='js/activation.js') }}"></script>
+{% endblock %}

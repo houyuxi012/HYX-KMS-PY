@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install locked dependencies
+        run: python -m pip install --require-hashes -r requirements.lock
+      - name: Install documentation and lint dependencies
+        run: python -m pip install -r docs/requirements.txt pyflakes
+      - name: Run verification suite
+        run: sh scripts/run_checks.sh
+      - name: Build production images
+        run: |
+          docker build -t hyx-kms-py:ci -f docker/hyx-kms-py/Dockerfile.amd64 .
+          docker build -t hyx-kms-py-minimal:ci -f docker/hyx-kms-py-minimal/Dockerfile.amd64 .
+      - name: Smoke-test production images
+        run: |
+          set -eu
+          cleanup() {
+            docker rm -f hyx-kms-full-ci hyx-kms-minimal-ci >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+          for pair in "hyx-kms-py:ci:hyx-kms-full-ci" "hyx-kms-py-minimal:ci:hyx-kms-minimal-ci"; do
+            image="${pair%:*}"
+            name="${pair##*:}"
+            docker run -d --name "$name" \
+              --read-only \
+              --tmpfs /tmp:rw,noexec,nosuid,nodev,size=16m \
+              --cap-drop=ALL \
+              --security-opt=no-new-privileges:true \
+              --pids-limit=256 \
+              --memory=512m \
+              --cpus=1.0 \
+              -e IP=0.0.0.0 \
+              -e PORT=1688 \
+              -e SQLITE=false \
+              -e KMS_ALLOWED_NETWORKS=127.0.0.0/8 \
+              -e LOGFILE=STDOUT \
+              "$image" >/dev/null
+            for attempt in $(seq 1 45); do
+              status="$(docker inspect --format '{{.State.Health.Status}}' "$name")"
+              [ "$status" = healthy ] && break
+              sleep 2
+            done
+            if [ "$(docker inspect --format '{{.State.Health.Status}}' "$name")" != healthy ]; then
+              docker logs "$name"
+              exit 1
+            fi
+            [ "$(docker image inspect --format '{{.Config.User}}' "$image")" = hyx ]
+            docker exec "$name" python3 -c 'import os; assert os.getuid() != 0'
+            cleanup
+          done

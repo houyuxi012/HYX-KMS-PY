@@ -1,0 +1,19 @@
+.DS_Store
+**/.DS_Store
+**/__pycache__
+**/*.pyc
+**/*.log
+**/*.db
+.git
+.venv*
+dist
+build
+docs
+tests
+output
+
+# Local TLS material must never enter source or images.
+*.pem
+*.key
+*.p12
+*.pfx

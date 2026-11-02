@@ -1,0 +1,98 @@
+{
+  "bomFormat": "CycloneDX",
+  "components": [
+    {
+      "bom-ref": "pkg:pypi/blinker@1.9.0",
+      "name": "blinker",
+      "purl": "pkg:pypi/blinker@1.9.0",
+      "type": "library",
+      "version": "1.9.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/click@8.5.0",
+      "name": "click",
+      "purl": "pkg:pypi/click@8.5.0",
+      "type": "library",
+      "version": "8.5.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/flask@3.1.3",
+      "name": "flask",
+      "purl": "pkg:pypi/flask@3.1.3",
+      "type": "library",
+      "version": "3.1.3"
+    },
+    {
+      "bom-ref": "pkg:pypi/gunicorn@23.0.0",
+      "name": "gunicorn",
+      "purl": "pkg:pypi/gunicorn@23.0.0",
+      "type": "library",
+      "version": "23.0.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/itsdangerous@2.2.0",
+      "name": "itsdangerous",
+      "purl": "pkg:pypi/itsdangerous@2.2.0",
+      "type": "library",
+      "version": "2.2.0"
+    },
+    {
+      "bom-ref": "pkg:pypi/jinja2@3.1.6",
+      "name": "jinja2",
+      "purl": "pkg:pypi/jinja2@3.1.6",
+      "type": "library",
+      "version": "3.1.6"
+    },
+    {
+      "bom-ref": "pkg:pypi/markupsafe@3.0.4",
+      "name": "markupsafe",
+      "purl": "pkg:pypi/markupsafe@3.0.4",
+      "type": "library",
+      "version": "3.0.4"
+    },
+    {
+      "bom-ref": "pkg:pypi/packaging@26.3",
+      "name": "packaging",
+      "purl": "pkg:pypi/packaging@26.3",
+      "type": "library",
+      "version": "26.3"
+    },
+    {
+      "bom-ref": "pkg:pypi/tzlocal@5.4.5",
+      "name": "tzlocal",
+      "purl": "pkg:pypi/tzlocal@5.4.5",
+      "type": "library",
+      "version": "5.4.5"
+    },
+    {
+      "bom-ref": "pkg:pypi/werkzeug@3.1.9",
+      "name": "werkzeug",
+      "purl": "pkg:pypi/werkzeug@3.1.9",
+      "type": "library",
+      "version": "3.1.9"
+    }
+  ],
+  "metadata": {
+    "component": {
+      "bom-ref": "pkg:generic/hyx-kms-py@2026.11.02-rc.2",
+      "licenses": [
+        {
+          "license": {
+            "name": "Unlicense"
+          }
+        }
+      ],
+      "name": "HYX-KMS-PY",
+      "type": "application",
+      "version": "2026.11.02-rc.2"
+    },
+    "properties": [
+      {
+        "name": "hyx:lockfiles",
+        "value": "requirements.lock,requirements-minimal.lock"
+      }
+    ]
+  },
+  "specVersion": "1.5",
+  "version": 1
+}

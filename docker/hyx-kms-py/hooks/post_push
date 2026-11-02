@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Publication requires an explicitly supplied registry-qualified image name.
+: "${PUBLISH_IMAGE:?Set the authorized registry-qualified image name}"
+docker buildx imagetools create --tag "$PUBLISH_IMAGE" \
+  "$PUBLISH_IMAGE-amd64" "$PUBLISH_IMAGE-arm32v6" "$PUBLISH_IMAGE-arm32v7" "$PUBLISH_IMAGE-arm64v8"

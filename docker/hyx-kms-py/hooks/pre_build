@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Host binfmt configuration is an explicit administrator prerequisite.
+# Never reset host registrations or launch privileged downloads from a build hook.
+docker buildx inspect --bootstrap

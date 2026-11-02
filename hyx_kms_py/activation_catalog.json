@@ -1,0 +1,655 @@
+{
+  "sources": [
+    "https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys",
+    "https://learn.microsoft.com/en-us/office/volume-license-activation/gvlks",
+    "https://learn.microsoft.com/en-us/previous-versions/office/office-2010/ee624355(v=office.14)"
+  ],
+  "verified_on": "2026-11-01",
+  "groups": {
+    "Windows Server": [
+      {
+        "group": "Windows Server 2025",
+        "editions": [
+          {
+            "name": "Windows Server 2025 Standard",
+            "sku_id": "7dc26449-db21-4e09-ba37-28f2958506a6"
+          },
+          {
+            "name": "Windows Server 2025 Datacenter",
+            "sku_id": "c052f164-cdf6-409a-a0cb-853ba0f0f55a"
+          },
+          {
+            "name": "Windows Server 2025 Datacenter: Azure Edition",
+            "sku_id": "c2e946d1-cfa2-4523-8c87-30bc696ee584"
+          }
+        ]
+      },
+      {
+        "group": "Windows Server 2022",
+        "editions": [
+          {
+            "name": "Windows Server 2022 Standard",
+            "sku_id": "9bd77860-9b31-4b7b-96ad-2564017315bf"
+          },
+          {
+            "name": "Windows Server 2022 Datacenter",
+            "sku_id": "ef6cfc9f-8c5d-44ac-9aad-de6a2ea0ae03"
+          },
+          {
+            "name": "Windows Server 2022 Datacenter: Azure Edition",
+            "sku_id": "19b5e0fb-4431-46bc-bac1-2f1873e4ae73"
+          }
+        ]
+      },
+      {
+        "group": "Windows Server 2019",
+        "editions": [
+          {
+            "name": "Windows Server 2019 Datacenter",
+            "sku_id": "34e1ae55-27f8-4950-8877-7a03be5fb181"
+          },
+          {
+            "name": "Windows Server 2019 Essentials",
+            "sku_id": "034d3cbb-5d4b-4245-b3f8-f84571314078"
+          },
+          {
+            "name": "Windows Server 2019 Standard",
+            "sku_id": "de32eafd-aaee-4662-9444-c1befb41bde2"
+          },
+          {
+            "name": "Windows Server 2019 Datacenter (Semi-Annual Channel v.1809)",
+            "sku_id": "90c362e5-0da1-4bfd-b53b-b87d309ade43"
+          },
+          {
+            "name": "Windows Server 2019 Standard (Semi-Annual Channel v.1809)",
+            "sku_id": "73e3957c-fc0c-400d-9184-5f7b6f2eb409"
+          }
+        ]
+      },
+      {
+        "group": "Windows Server 2016",
+        "editions": [
+          {
+            "name": "Windows Server 2016 Datacenter",
+            "sku_id": "21c56779-b449-4d20-adfc-eece0e1ad74b"
+          },
+          {
+            "name": "Windows Server 2016 Essentials",
+            "sku_id": "2b5a1b0f-a5ab-4c54-ac2f-a6d94824a283"
+          },
+          {
+            "name": "Windows Server 2016 Standard",
+            "sku_id": "8c1c5410-9f39-4805-8c9d-63a07706358f"
+          },
+          {
+            "name": "Windows Server 2016 Datacenter (Semi-Annual Channel v.1803)",
+            "sku_id": "e49c08e7-da82-42f8-bde2-b570fbcae76c"
+          },
+          {
+            "name": "Windows Server 2016 Standard (Semi-Annual Channel v.1803)",
+            "sku_id": "61c5ef22-f14f-4553-a824-c4b31e84b100"
+          }
+        ]
+      },
+      {
+        "group": "Windows Server 2012 R2",
+        "editions": [
+          {
+            "name": "Windows Server 2012 R2 Datacenter",
+            "sku_id": "00091344-1ea4-4f37-b789-01750ba6988c"
+          },
+          {
+            "name": "Windows Server 2012 R2 Essentials",
+            "sku_id": "21db6ba4-9a7b-4a14-9e29-64a60c59301d"
+          },
+          {
+            "name": "Windows Server 2012 R2 Standard",
+            "sku_id": "b3ca044e-a358-4d68-9883-aaa2941aca99"
+          }
+        ]
+      },
+      {
+        "group": "Windows Server 2012",
+        "editions": [
+          {
+            "name": "Windows Server 2012 Datacenter",
+            "sku_id": "d3643d60-0c42-412d-a7d6-52e6635327f6"
+          },
+          {
+            "name": "Windows Server 2012 MultiPoint Premium",
+            "sku_id": "95fd1c83-7df5-494a-be8b-1300e1c9d1cd"
+          },
+          {
+            "name": "Windows Server 2012 MultiPoint Standard",
+            "sku_id": "7d5486c7-e120-4771-b7f1-7b56c6d3170c"
+          },
+          {
+            "name": "Windows Server 2012 Standard",
+            "sku_id": "f0f5ec41-0d55-4732-af02-440a44a3cf0f"
+          }
+        ]
+      },
+      {
+        "group": "Windows Server 2008 R2 A (Web and HPC)",
+        "editions": [
+          {
+            "name": "Windows Server 2008 R2 Web",
+            "sku_id": "a78b8bd9-8017-4df5-b86a-09f756affa7c"
+          },
+          {
+            "name": "Windows Server 2008 R2 HPC Edition",
+            "sku_id": "cda18cf3-c196-46ad-b289-60c072869994"
+          }
+        ]
+      },
+      {
+        "group": "Windows Server 2008 R2 B (Standard and Enterprise)",
+        "editions": [
+          {
+            "name": "Windows Server 2008 R2 Standard",
+            "sku_id": "68531fb9-5511-4989-97be-d11a0f55633f"
+          },
+          {
+            "name": "Windows Server 2008 R2 Enterprise",
+            "sku_id": "620e2b3d-09e7-42fd-802a-17a13652fe7a"
+          }
+        ]
+      },
+      {
+        "group": "Windows Server 2008 R2 C (Datacenter and Itanium)",
+        "editions": [
+          {
+            "name": "Windows Server 2008 R2 Datacenter",
+            "sku_id": "7482e61b-c589-4b7f-8ecc-46d455ac3b87"
+          },
+          {
+            "name": "Windows Server 2008 R2 for Itanium Systems",
+            "sku_id": "8a26851c-1c7e-48d3-a687-fbca9b9ac16b"
+          }
+        ]
+      },
+      {
+        "group": "Windows Server 2008 A (Web and HPC)",
+        "editions": [
+          {
+            "name": "Windows Server 2008 Web",
+            "sku_id": "ddfa9f7c-f09e-40b9-8c1a-be877a9a7f4b"
+          },
+          {
+            "name": "Windows Server 2008 HPC Edition",
+            "sku_id": "7afb1156-2c1d-40fc-b260-aab7442b62fe"
+          }
+        ]
+      },
+      {
+        "group": "Windows Server 2008 B (Standard and Enterprise)",
+        "editions": [
+          {
+            "name": "Windows Server 2008 Standard",
+            "sku_id": "ad2542d4-9154-4c6d-8a44-30f11ee96989"
+          },
+          {
+            "name": "Windows Server 2008 Standard without Hyper-V",
+            "sku_id": "2401e3d0-c50a-4b58-87b2-7e794b7d2607"
+          },
+          {
+            "name": "Windows Server 2008 Enterprise",
+            "sku_id": "c1af4d90-d1bc-44ca-85d4-003ba33db3b9"
+          },
+          {
+            "name": "Windows Server 2008 Enterprise without Hyper-V",
+            "sku_id": "8198490a-add0-47b2-b3ba-316b12d647b4"
+          }
+        ]
+      },
+      {
+        "group": "Windows Server 2008 C (Datacenter and Itanium)",
+        "editions": [
+          {
+            "name": "Windows Server 2008 Datacenter",
+            "sku_id": "68b6e220-cf09-466b-92d3-45cd964b9509"
+          },
+          {
+            "name": "Windows Server 2008 Datacenter without Hyper-V",
+            "sku_id": "fd09ef77-5647-4eff-809c-af2b64659a45"
+          },
+          {
+            "name": "Windows Server 2008 for Itanium Systems",
+            "sku_id": "01ef176b-3e0d-422a-b4f8-4ea880035e8f"
+          }
+        ]
+      }
+    ],
+    "Office": [
+      {
+        "group": "Office 2024",
+        "editions": [
+          {
+            "name": "Office Access LTSC 2024",
+            "sku_id": "72e9faa7-ead1-4f3d-9f6e-3abc090a81d7"
+          },
+          {
+            "name": "Office Excel LTSC 2024",
+            "sku_id": "cbbba2c3-0ff5-4558-846a-043ef9d78559"
+          },
+          {
+            "name": "Office Outlook LTSC 2024",
+            "sku_id": "bef3152a-8a04-40f2-a065-340c3f23516d"
+          },
+          {
+            "name": "Office PowerPoint LTSC 2024",
+            "sku_id": "b63626a4-5f05-4ced-9639-31ba730a127e"
+          },
+          {
+            "name": "Office LTSC Professional Plus 2024",
+            "sku_id": "8d368fc1-9470-4be2-8d66-90e836cbb051"
+          },
+          {
+            "name": "Office Project Professional 2024",
+            "sku_id": "f510af75-8ab7-4426-a236-1bfb95c34ff8"
+          },
+          {
+            "name": "Office Project Standard 2024",
+            "sku_id": "9f144f27-2ac5-40b9-899d-898c2b8b4f81"
+          },
+          {
+            "name": "Office Skype for Business LTSC 2024",
+            "sku_id": "0002290a-2091-4324-9e53-3cfe28884cde"
+          },
+          {
+            "name": "Office LTSC Standard 2024",
+            "sku_id": "bbac904f-6a7e-418a-bb4b-24c85da06187"
+          },
+          {
+            "name": "Office Visio LTSC Professional 2024",
+            "sku_id": "fa187091-8246-47b1-964f-80a0b1e5d69a"
+          },
+          {
+            "name": "Office Visio LTSC Standard 2024",
+            "sku_id": "923fa470-aa71-4b8b-b35c-36b79bf9f44b"
+          },
+          {
+            "name": "Office Word LTSC 2024",
+            "sku_id": "d0eded01-0881-4b37-9738-190400095098"
+          }
+        ]
+      },
+      {
+        "group": "Office 2021",
+        "editions": [
+          {
+            "name": "Office Access LTSC 2021",
+            "sku_id": "1fe429d8-3fa7-4a39-b6f0-03dded42fe14"
+          },
+          {
+            "name": "Office Excel LTSC 2021",
+            "sku_id": "ea71effc-69f1-4925-9991-2f5e319bbc24"
+          },
+          {
+            "name": "Office Outlook LTSC 2021",
+            "sku_id": "a5799e4c-f83c-4c6e-9516-dfe9b696150b"
+          },
+          {
+            "name": "Office PowerPoint LTSC 2021",
+            "sku_id": "6e166cc3-495d-438a-89e7-d7c9e6fd4dea"
+          },
+          {
+            "name": "Office LTSC Professional Plus 2021",
+            "sku_id": "fbdb3e18-a8ef-4fb3-9183-dffd60bd0984"
+          },
+          {
+            "name": "Office Project Professional 2021",
+            "sku_id": "76881159-155c-43e0-9db7-2d70a9a3a4ca"
+          },
+          {
+            "name": "Office Project Standard 2021",
+            "sku_id": "6dd72704-f752-4b71-94c7-11cec6bfc355"
+          },
+          {
+            "name": "Office Publisher LTSC 2021",
+            "sku_id": "aa66521f-2370-4ad8-a2bb-c095e3e4338f"
+          },
+          {
+            "name": "Office Skype for Business LTSC 2021",
+            "sku_id": "1f32a9af-1274-48bd-ba1e-1ab7508a23e8"
+          },
+          {
+            "name": "Office LTSC Standard 2021",
+            "sku_id": "080a45c5-9f9f-49eb-b4b0-c3c610a5ebd3"
+          },
+          {
+            "name": "Office Visio LTSC Professional 2021",
+            "sku_id": "fb61ac9a-1688-45d2-8f6b-0674dbffa33c"
+          },
+          {
+            "name": "Office Visio LTSC Standard 2021",
+            "sku_id": "72fce797-1884-48dd-a860-b2f6a5efd3ca"
+          },
+          {
+            "name": "Office Word LTSC 2021",
+            "sku_id": "abe28aea-625a-43b1-8e30-225eb8fbd9e5"
+          }
+        ]
+      },
+      {
+        "group": "Office 2019",
+        "editions": [
+          {
+            "name": "Office Access 2019",
+            "sku_id": "9e9bceeb-e736-4f26-88de-763f87dcc485"
+          },
+          {
+            "name": "Office Excel 2019",
+            "sku_id": "237854e9-79fc-4497-a0c1-a70969691c6b"
+          },
+          {
+            "name": "Office Outlook 2019",
+            "sku_id": "c8f8a301-19f5-4132-96ce-2de9d4adbd33"
+          },
+          {
+            "name": "Office PowerPoint 2019",
+            "sku_id": "3131fd61-5e4f-4308-8d6d-62be1987c92c"
+          },
+          {
+            "name": "Office Professional Plus 2019",
+            "sku_id": "85dd8b5f-eaa4-4af3-a628-cce9e77c9a03"
+          },
+          {
+            "name": "Office Project Professional 2019",
+            "sku_id": "2ca2bf3f-949e-446a-82c7-e25a15ec78c4"
+          },
+          {
+            "name": "Office Project Standard 2019",
+            "sku_id": "1777f0e3-7392-4198-97ea-8ae4de6f6381"
+          },
+          {
+            "name": "Office Publisher 2019",
+            "sku_id": "9d3e4cca-e172-46f1-a2f4-1d2107051444"
+          },
+          {
+            "name": "Office Skype for Business 2019",
+            "sku_id": "734c6c6e-b0ba-4298-a891-671772b2bd1b"
+          },
+          {
+            "name": "Office Standard 2019",
+            "sku_id": "6912a74b-a5fb-401a-bfdb-2e3ab46f4b02"
+          },
+          {
+            "name": "Office Visio Professional 2019",
+            "sku_id": "5b5cf08f-b81a-431d-b080-3450d8620565"
+          },
+          {
+            "name": "Office Visio Standard 2019",
+            "sku_id": "e06d7df3-aad0-419d-8dfb-0ac37e2bdf39"
+          },
+          {
+            "name": "Office Word 2019",
+            "sku_id": "059834fe-a8ea-4bff-b67b-4d006b5447d3"
+          }
+        ]
+      },
+      {
+        "group": "Office 2016",
+        "editions": [
+          {
+            "name": "Office Access 2016",
+            "sku_id": "67c0fc0c-deba-401b-bf8b-9c8ad8395804"
+          },
+          {
+            "name": "Office Excel 2016",
+            "sku_id": "c3e65d36-141f-4d2f-a303-a842ee756a29"
+          },
+          {
+            "name": "Office OneNote 2016",
+            "sku_id": "d8cace59-33d2-4ac7-9b1b-9b72339c51c8"
+          },
+          {
+            "name": "Office Outlook 2016",
+            "sku_id": "ec9d9265-9d1e-4ed0-838a-cdc20f2551a1"
+          },
+          {
+            "name": "Office PowerPoint 2016",
+            "sku_id": "d70b1bba-b893-4544-96e2-b7a318091c33"
+          },
+          {
+            "name": "Office Professional Plus 2016",
+            "sku_id": "d450596f-894d-49e0-966a-fd39ed4c4c64"
+          },
+          {
+            "name": "Office Project Professional 2016",
+            "sku_id": "4f414197-0fc2-4c01-b68a-86cbb9ac254c"
+          },
+          {
+            "name": "Office Project Standard 2016",
+            "sku_id": "da7ddabc-3fbe-4447-9e01-6ab7440b4cd4"
+          },
+          {
+            "name": "Office Publisher 2016",
+            "sku_id": "041a06cb-c5b8-4772-809f-416d03d16654"
+          },
+          {
+            "name": "Office Skype for Business 2016",
+            "sku_id": "83e04ee1-fa8d-436d-8994-d31a862cab77"
+          },
+          {
+            "name": "Office Standard 2016",
+            "sku_id": "dedfa23d-6ed1-45a6-85dc-63cae0546de6"
+          },
+          {
+            "name": "Office Visio Professional 2016",
+            "sku_id": "6bf301c1-b94a-43e9-ba31-d494598c47fb"
+          },
+          {
+            "name": "Office Visio Standard 2016",
+            "sku_id": "aa2a7821-1827-4c2c-8f1d-4513a34dda97"
+          },
+          {
+            "name": "Office Word 2016",
+            "sku_id": "bb11badf-d8aa-470e-9311-20eaf80fe5cc"
+          }
+        ]
+      },
+      {
+        "group": "Office 2013",
+        "editions": [
+          {
+            "name": "Office Access 2013",
+            "sku_id": "6ee7622c-18d8-4005-9fb7-92db644a279b"
+          },
+          {
+            "name": "Office Excel 2013",
+            "sku_id": "f7461d52-7c2b-43b2-8744-ea958e0bd09a"
+          },
+          {
+            "name": "Office InfoPath 2013",
+            "sku_id": "a30b8040-d68a-423f-b0b5-9ce292ea5a8f"
+          },
+          {
+            "name": "Office Lync 2013",
+            "sku_id": "1b9f11e3-c85c-4e1b-bb29-879ad2c909e3"
+          },
+          {
+            "name": "Office OneNote 2013",
+            "sku_id": "efe1f3e6-aea2-4144-a208-32aa872b6545"
+          },
+          {
+            "name": "Office Outlook 2013",
+            "sku_id": "771c3afa-50c5-443f-b151-ff2546d863a0"
+          },
+          {
+            "name": "Office PowerPoint 2013",
+            "sku_id": "8c762649-97d1-4953-ad27-b7e2c25b972e"
+          },
+          {
+            "name": "Office Professional Plus 2013",
+            "sku_id": "b322da9c-a2e2-4058-9e4e-f59a6970bd69"
+          },
+          {
+            "name": "Office Project Professional 2013",
+            "sku_id": "4a5d124a-e620-44ba-b6ff-658961b33b9a"
+          },
+          {
+            "name": "Office Project Standard 2013",
+            "sku_id": "427a28d1-d17c-4abf-b717-32c780ba6f07"
+          },
+          {
+            "name": "Office Publisher 2013",
+            "sku_id": "00c79ff1-6850-443d-bf61-71cde0de305f"
+          },
+          {
+            "name": "Office Standard 2013",
+            "sku_id": "b13afb38-cd79-4ae5-9f7f-eed058d750ca"
+          },
+          {
+            "name": "Office Visio Professional 2013",
+            "sku_id": "e13ac10e-75d0-4aff-a0cd-764982cf541c"
+          },
+          {
+            "name": "Office Visio Standard 2013",
+            "sku_id": "ac4efaf0-f81f-4f61-bdf7-ea32b02ab117"
+          },
+          {
+            "name": "Office Word 2013",
+            "sku_id": "d9f5b1c6-5386-495a-88f9-9ad6b41ac9b3"
+          }
+        ]
+      },
+      {
+        "group": "Office 2010",
+        "editions": [
+          {
+            "name": "Office Access 2010",
+            "sku_id": "8ce7e872-188c-4b98-9d90-f8f90b7aad02"
+          },
+          {
+            "name": "Office Excel 2010",
+            "sku_id": "cee5d470-6e3b-4fcc-8c2b-d17428568a9f"
+          },
+          {
+            "name": "Office Groove (SharePoint Workspace) 2010",
+            "sku_id": "8947d0b8-c33b-43e1-8c56-9b674c052832"
+          },
+          {
+            "name": "Office InfoPath 2010",
+            "sku_id": "ca6b6639-4ad6-40ae-a575-14dee07f6430"
+          },
+          {
+            "name": "Office OneNote 2010",
+            "sku_id": "ab586f5c-5256-4632-962f-fefd8b49e6f4"
+          },
+          {
+            "name": "Office Outlook 2010",
+            "sku_id": "ecb7c192-73ab-4ded-acf4-2399b095d0cc"
+          },
+          {
+            "name": "Office PowerPoint 2010",
+            "sku_id": "45593b1d-dfb1-4e91-bbfb-2d5d0ce2227a"
+          },
+          {
+            "name": "Office Professional Plus 2010",
+            "sku_id": "6f327760-8c5c-417c-9b61-836a98287e0c"
+          },
+          {
+            "name": "Office Project Professional 2010",
+            "sku_id": "df133ff7-bf14-4f95-afe3-7b48e7e331ef"
+          },
+          {
+            "name": "Office Project Standard 2010",
+            "sku_id": "5dc7bf61-5ec9-4996-9ccb-df806a2d0efe"
+          },
+          {
+            "name": "Office Publisher 2010",
+            "sku_id": "b50c4f75-599b-43e8-8dcd-1081a7967241"
+          },
+          {
+            "name": "Office Standard 2010",
+            "sku_id": "9da2a678-fb6b-4e67-ab84-60dd6a9c819a"
+          },
+          {
+            "name": "Office Visio Premium 2010",
+            "sku_id": "92236105-bb67-494f-94c7-7f7a607929bd"
+          },
+          {
+            "name": "Office Visio Professional 2010",
+            "sku_id": "e558389c-83c3-4b29-adfe-5e4d7f46c358"
+          },
+          {
+            "name": "Office Visio Standard 2010",
+            "sku_id": "9ed833ff-4f92-4f36-b370-8683a4f13275"
+          },
+          {
+            "name": "Office Word 2010",
+            "sku_id": "2d0882e7-a4e7-423b-8ccc-70d91e0158b1"
+          }
+        ]
+      }
+    ]
+  },
+  "excluded": [
+    {
+      "family": "Windows Server",
+      "name": "Windows Server 2019 ARM64",
+      "reason": "Not in reviewed Microsoft public GVLK lists"
+    },
+    {
+      "family": "Windows Server",
+      "name": "Windows Server 2019 Azure Core",
+      "reason": "Not in reviewed Microsoft public GVLK lists"
+    },
+    {
+      "family": "Windows Server",
+      "name": "Windows Server 2016 Azure Core",
+      "reason": "Not in reviewed Microsoft public GVLK lists"
+    },
+    {
+      "family": "Windows Server",
+      "name": "Windows Server 2016 Cloud Storage",
+      "reason": "Not in reviewed Microsoft public GVLK lists"
+    },
+    {
+      "family": "Windows Server",
+      "name": "Windows Server 2016 ARM64",
+      "reason": "Not in reviewed Microsoft public GVLK lists"
+    },
+    {
+      "family": "Windows Server",
+      "name": "Windows Server 2012 R2 Cloud Storage",
+      "reason": "Not in reviewed Microsoft public GVLK lists"
+    },
+    {
+      "family": "Windows Server",
+      "name": "Windows MultiPoint Server 2010",
+      "reason": "Not in reviewed Microsoft public GVLK lists"
+    },
+    {
+      "family": "Office",
+      "name": "Office Mondo 2016",
+      "reason": "Not in reviewed Microsoft public GVLK lists"
+    },
+    {
+      "family": "Office",
+      "name": "Office Mondo 2013",
+      "reason": "Not in reviewed Microsoft public GVLK lists"
+    },
+    {
+      "family": "Office",
+      "name": "Office SharePoint Workspace (Groove) 2013",
+      "reason": "Not in reviewed Microsoft public GVLK lists"
+    },
+    {
+      "family": "Office",
+      "name": "Office Mondo 1 2010",
+      "reason": "Not in reviewed Microsoft public GVLK lists"
+    },
+    {
+      "family": "Office",
+      "name": "Office Mondo 2 2010",
+      "reason": "Not in reviewed Microsoft public GVLK lists"
+    },
+    {
+      "family": "Office",
+      "name": "Office Small Business Basics 2010",
+      "reason": "Not in reviewed Microsoft public GVLK lists"
+    }
+  ]
+}

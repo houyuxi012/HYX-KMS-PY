@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="{{ language }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ t('密钥管理服务平台') }}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='logo.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bulma.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
+</head>
+<body>
+    <nav class="navbar kms-navbar" role="navigation" aria-label="{{ t('主导航') }}">
+        <div class="nav-inner">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img class="kms-logo" src="{{ url_for('static', filename='logo.svg') }}" width="32" height="32" alt="">
+                <div class="kms-title">{{ t('密钥管理服务平台') }}</div>
+            </a>
+            <button type="button" class="navbar-burger" aria-label="{{ t('菜单') }}" aria-controls="kms-nav-menu" aria-expanded="false">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </button>
+        </div>
+        <div id="kms-nav-menu" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item {{ 'is-active' if path == '/' else '' }}" href="/">{{ t('首页') }}</a>
+                <a class="navbar-item {{ 'is-active' if path.startswith('/activate') else '' }}" href="/activate">{{ t('激活') }}</a>
+                <a class="navbar-item {{ 'is-active' if path.startswith('/products') else '' }}" href="/products">{{ t('产品') }}</a>
+                <a class="navbar-item {{ 'is-active' if path == '/usage/' else '' }}" href="/usage"{% if path == '/usage/' %} aria-current="page"{% endif %}>{{ t('使用说明') }}</a>
+            </div>
+            <div class="navbar-end">
+                <form class="language-switch" method="get" action="{{ request.path }}">
+                    {% for key, value in request.args.items(multi=True) %}{% if key != 'lang' %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endif %}{% endfor %}
+                    <label for="language-select">{{ t('语言') }}</label>
+                    <select id="language-select" name="lang">
+                        {% for code, label in languages %}<option value="{{ code }}"{% if language == code %} selected{% endif %}>{{ label }}</option>{% endfor %}
+                    </select>
+                    <button type="submit">OK</button>
+                </form>
+            </div>
+        </div>
+        </div>
+    </nav>
+
+    <main id="content">
+        {% block content %}{% endblock %}
+
+
+    </main>
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <p class="footer-copyright">©️{{ t('密钥管理服务器平台') }} {{ t('版权所有') }}</p>
+            <p class="footer-support">{{ t('技术支持') }} <a href="https://www.houyuxi.com" target="_blank" rel="noopener noreferrer">侯钰熙</a> · <a href="/license">{{ t('软件许可') }}</a></p>
+        </div>
+    </footer>
+
+    <script id="ui-messages" type="application/json" nonce="{{ csp_nonce }}">{{ ui_messages | tojson }}</script>
+    <script src="{{ url_for('static', filename='js/site.js') }}"></script>
+    {% block script %}{% endblock %}
+</body>
+</html>

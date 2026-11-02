@@ -1,0 +1,42 @@
+FROM python:3.14.7-alpine@sha256:9e9fde4d32eedce0b661d9ab91e826b62dddf28e928c230ec55f1866cac66b01
+
+ENV HYX_WEBUI_AVAILABLE=0 \
+    IP=0.0.0.0 \
+    PORT=1688 \
+    EPID="" \
+    LCID=1033 \
+    CLIENT_COUNT=26 \
+    ACTIVATION_INTERVAL=120 \
+    RENEWAL_INTERVAL=10080 \
+    HWID=RANDOM \
+    LOGLEVEL=INFO \
+    LOGFILE=/var/log/HYX-KMS-PY_server.log \
+    LOGSIZE="" \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/opt/HYX-KMS-PY/hyx_kms_py
+
+COPY requirements-minimal.lock /opt/requirements.lock
+RUN python3 -m pip install --no-cache-dir --require-hashes -r /opt/requirements.lock
+
+WORKDIR /opt/HYX-KMS-PY
+
+COPY hyx_kms_py ./hyx_kms_py
+COPY scripts ./scripts
+COPY VERSION LICENSE ./
+COPY docker/hyx-kms-py/start.sh /usr/local/bin/hyx-kms-py-start
+
+RUN addgroup -S hyx \
+    && adduser -S -G hyx hyx \
+    && chown -R hyx:hyx /opt/HYX-KMS-PY \
+    && touch /var/log/HYX-KMS-PY_server.log \
+    && chown hyx:hyx /var/log/HYX-KMS-PY_server.log \
+    && chmod 600 /var/log/HYX-KMS-PY_server.log \
+    && chmod 755 /usr/local/bin/hyx-kms-py-start
+
+USER hyx
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=15s --retries=3 CMD python3 -m hyx_kms_health
+
+EXPOSE 1688
+
+ENTRYPOINT ["/usr/local/bin/hyx-kms-py-start"]

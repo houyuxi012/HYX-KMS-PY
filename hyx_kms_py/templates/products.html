@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ t('产品') }}{% endblock %}
+
+{% block content %}
+<section class="kms-panel">
+    <header class="page-heading"><h1>{{ t('产品与许可证') }}</h1><p>{{ t('支持的产品版本及对应 GVLK。') }}</p></header>
+    <nav class="level">
+        <div class="level-item has-text-centered">
+            <div>
+                <p class="heading">{{ t('产品') }}</p>
+                <p class="title">{{ count_products }}</p>
+            </div>
+        </div>
+        <div class="level-item has-text-centered">
+            <div>
+                <p class="heading">Windows</p>
+                <p class="title">{{ count_products_windows }}</p>
+            </div>
+        </div>
+        <div class="level-item has-text-centered">
+            <div>
+                <p class="heading">Windows Server</p>
+                <p class="title">{{ count_products_server }}</p>
+            </div>
+        </div>
+        <div class="level-item has-text-centered">
+            <div>
+                <p class="heading">Office</p>
+                <p class="title">{{ count_products_office }}</p>
+            </div>
+        </div>
+    </nav>
+
+    <hr>
+
+    {% for bucket, groups in products.items() %}
+    {% if groups %}
+    <h1 class="title kms-accent">{{ bucket }}</h1>
+    {% for group in groups %}
+    <h2 class="subtitle">{{ group.group }}</h2>
+    <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+        <thead>
+            <tr>
+                <th>{{ t('产品版本') }}</th>
+                <th>GVLK</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in group['items'] %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td><pre class="glvk">{{ item.gvlk }}</pre></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endfor %}
+    {% endif %}
+    {% endfor %}
+</section>
+{% endblock %}

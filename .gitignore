@@ -1,0 +1,29 @@
+# Runtime state and machine-local configuration
+*.log
+HYX-KMS-PY_database.db*
+etrigan.log*
+.env
+.venv/
+venv/
+.DS_Store
+
+# Python and test output
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+.coverage.*
+
+# Build and generated documentation
+build/
+dist/
+docs/_build/
+
+# Local TLS material must never enter source or images
+*.pem
+*.key
+*.p12
+*.pfx

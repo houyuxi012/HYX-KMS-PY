@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="kms-panel">
+    <header class="page-heading">
+        <h1>{{ t('使用说明') }}</h1>
+        <p>{{ t('激活脚本的使用方式与常见问题。') }}</p>
+    </header>
+    <div class="kms-faq">
+        <details>
+            <summary>{{ t('Office 应该选择套件还是单独应用？') }}</summary>
+            <p>{{ t('安装了 Professional Plus 或 Standard 套件时，选择对应套件，不要为其中的 Word、Excel 分别安装单独应用密钥。只有单独安装的 Project、Visio 或其他应用才选择对应产品，并按已安装 Office 的位数选择架构。') }}</p>
+        </details>
+        <details>
+            <summary>{{ t('为什么通常不需要修改端口？') }}</summary>
+            <p>{{ t('KMS 默认使用 TCP 1688，普通使用无需修改。仅当管理员配置了其他对外端口时，展开激活页的“高级设置”，填写客户端实际连接的端口。网站的 HTTPS 端口与 KMS 端口相互独立。') }}</p>
+        </details>
+        <details>
+            <summary>{{ t('如何使用激活脚本？') }}</summary>
+            <p>{{ t('下载脚本后，在目标 Windows 设备上右键选择“以管理员身份运行”。Office 需要安装对应的批量许可版本。可参考') }} <a href="https://learn.microsoft.com/en-us/office/volume-license-activation/tools-to-manage-volume-activation-of-office" target="_blank" rel="noopener noreferrer">{{ t('微软批量激活工具说明') }}</a>{{ t('。') }}</p>
+        </details>
+        <details>
+            <summary>{{ t('KMS 激活的原理是什么？') }}</summary>
+            <p>{{ t('KMS 是微软为组织提供的批量激活机制。客户端定期连接 KMS 服务器续期，通常有效期为 180 天。') }}</p>
+        </details>
+        <details>
+            <summary>{{ t('哪些版本支持 KMS？') }}</summary>
+            <p>{{ t('这里列出数据库中具有 GVLK 的正式批量许可版本。Windows 家庭版不支持 KMS；Office 需要安装对应的批量许可版本。') }}</p>
+        </details>
+        <details>
+            <summary>{{ t('激活和软件授权有什么区别？') }}</summary>
+            <p>{{ t('成功激活不等于获得软件使用授权，请使用组织已许可的产品和 KMS 服务。') }}</p>
+        </details>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ t('首页') }}{% endblock %}
+
+{% block content %}
+<section class="kms-panel">
+    <header class="page-heading"><h1>{{ t('服务概览') }}</h1><p>{{ t('客户端连接记录与产品信息。') }}</p></header>
+    {% if error %}
+    <article class="message is-danger">
+        <div class="message-header">{{ t('出错了') }}</div>
+        <div class="message-body">
+            <p>{{ error }}</p>
+            {% if error_id %}<p class="error-reference">{{ t('错误编号：{error_id}', error_id=error_id) }}</p>{% endif %}
+        </div>
+    </article>
+    {% else %}
+    <nav class="level">
+        <div class="level-item has-text-centered">
+            <div>
+                <p class="heading">{{ t('客户端') }}</p>
+                <p class="title">{{ count_clients }}</p>
+            </div>
+        </div>
+        <div class="level-item has-text-centered">
+            <div>
+                <p class="heading">Windows</p>
+                <p class="title">{{ count_clients_windows }}</p>
+            </div>
+        </div>
+        <div class="level-item has-text-centered">
+            <div>
+                <p class="heading">Office</p>
+                <p class="title">{{ count_clients_office }}</p>
+            </div>
+        </div>
+        <div class="level-item has-text-centered">
+            <div>
+                <p class="heading">{{ t('产品') }}</p>
+                <p class="title"><a href="/products">{{ count_projects }}</a></p>
+            </div>
+        </div>
+    </nav>
+
+    <hr>
+
+    {% if clients %}
+    <div class="client-table-scroll">
+        <table class="table is-striped is-hoverable is-fullwidth client-records-table">
+            <thead>
+                <tr>
+                    <th>{{ t('客户端标识') }}</th>
+                    <th>{{ t('机器名称') }}</th>
+                    <th>{{ t('应用') }}</th>
+                    <th><abbr title="Stock Keeping Unit">SKU</abbr> ID</th>
+                    <th>{{ t('客户端声明状态') }}</th>
+                    <th>{{ t('最近请求') }}</th>
+                    <th>KMS <abbr title="Enhanced Privacy ID">EPID</abbr></th>
+                    <th>{{ t('请求次数') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for client in clients %}
+                <tr>
+                    <th><pre class="clientMachineId">{{ client.clientMachineId }}</pre></th>
+                    <td class="machineName machine-name-cell">{{ client.machineName }}</td>
+                    <td>{{ client.applicationId }}</td>
+                    <td>{{ client.skuId }}</td>
+                    <td>{{ client.licenseStatus }}</td>
+                    <td class="convert_timestamp">{{ client.lastRequestTime }}</td>
+                    <td>
+                        {% if (client.kmsEpid or "") | length > 16 %}
+                        <abbr title="{{ client.kmsEpid }}">{{ client.kmsEpid | truncate(16, True, '...') }}</abbr>
+                        {% else %}
+                        {{ client.kmsEpid }}
+                        {% endif %}
+                    </td>
+                    <td>{{ client.requestCount }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <nav aria-label="{{ t('记录分页') }}">
+      {% if page > 1 %}<a href="?page={{ page - 1 }}">{{ t('上一页') }}</a>{% endif %}
+      <span>{{ t('第 {page} 页，每页最多 50 条', page=page) }}</span>
+      {% if has_next %}<a href="?page={{ page + 1 }}">{{ t('下一页') }}</a>{% endif %}
+    </nav>
+    {% else %}
+    <article class="message is-warning">
+        <div class="message-header"><p>{{ t('暂无客户端') }}</p></div>
+        <div class="message-body">
+            {{ t('当前没有客户端记录。请先使用兼容的 KMS 客户端连接本服务。') }}
+        </div>
+    </article>
+    {% endif %}
+    {% endif %}
+</section>
+{% endblock %}
